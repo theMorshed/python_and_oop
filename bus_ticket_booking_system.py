@@ -35,17 +35,18 @@ class Phibus:
         if flag:
             bus_driver = input("Enter driver name: ")
             arrival_time = input("Enter bus arrival time: ")
-            departur_time = input("Enter departure time: ")
+            departure_time = input("Enter departure time: ")
             bus_from = input("Enter start place: ")
             bus_destination = input("Enter destination place: ")
-            new_bus = Bus(bus_no, bus_driver, arrival_time, departur_time, bus_from, bus_destination)    
+            # assign a bus on line
+            new_bus = Bus(bus_no, bus_driver, arrival_time, departure_time, bus_from, bus_destination)    
             self.bus_list.append(vars(new_bus))
             print("\nBus added successfully")
             print(self.bus_list)
 
-
 # counter class
 class Counter(Phibus):
+    user_list = []
     def reserve_seat(self):
         bus_no = int(input("Enter bus no: "))
 
@@ -63,12 +64,53 @@ class Counter(Phibus):
             else:
                 print("Bus is not available right now")
 
-        print(self.bus_list)
+    def display_seat_plan(self):
+        bus_no = int(input("Enter bus no: "))
+
+        for bus in self.bus_list:
+            if bus_no == bus['coach']:
+                print("*" * 50)
+                print()
+                print(f"{' ' * 10}{'#' * 10} BUS INFO {'#' * 10}")
+                print(f"Bus Number: {bus_no}\t\t\tDriver: {bus['driver']}")
+                print(f"Arrival: {bus['arrival']}\t\t\tDeparture time: {bus['departure']}")
+                print(f"From: {bus['from_destination']}\t\t\tTo: {bus['to_destination']}")
+
+                a = 1
+                for i in range(5):
+                    for j in range(2):
+                        print(f"{a}. {bus['seat'][a - 1]}", end="\t")
+                        a += 1
+
+                    for j in range(2):
+                        print(f"{a}. {bus['seat'][a - 1]}", end="\t")
+                        a += 1
+                    print()
+                print("*" * 50)
+
+    def create_passenger(self):
+        name = input("Enter you username: ")
+        password = input("Enter your password: ")
+        new_user = User(name, password)
+        self.user_list.append(vars(new_user))
+
+    def available_buses(self):
+        if len(self.bus_list) == 0:
+            print("No Buses Available\n")
+        else:
+            print("*" * 50)
+            for bus in self.bus_list:
+                print()
+                print(f"{' ' * 10}{'#' * 10} BUS {bus['coach']} INFO {'#' * 10}")
+                print(f"Bus Number: {bus_no}\t\t\tDriver: {bus['driver']}")
+                print(f"Arrival: {bus['arrival']}\t\t\tDeparture time: {bus['departure']}")
+                print(f"From: {bus['from_destination']}\t\t\tTo: {bus['to_destination']}")
+
 
 # b = Bus(3, "Abdullah", "23pm", "24pm", "ctg", "dhaka")
 # print(vars(b))
-phibus = Phibus()
-phibus.add_bus()
-counter = Counter()
-counter.reserve_seat()
+# phibus = Phibus()
+# phibus.add_bus()
+# counter = Counter()
+# counter.reserve_seat()
 
