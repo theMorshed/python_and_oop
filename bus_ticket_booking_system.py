@@ -43,8 +43,32 @@ class Phibus:
             print("\nBus added successfully")
             print(self.bus_list)
 
+
+# counter class
+class Counter(Phibus):
+    def reserve_seat(self):
+        bus_no = int(input("Enter bus no: "))
+
+        for bus in self.bus_list:
+            if bus_no == bus['coach']:
+                passenger = input("Enter passenger name: ")
+                seat_no = int(input("Enter seat no: "))
+
+                if seat_no >= 20:
+                    print("Seat doesn't exists")
+                elif bus['seat'][seat_no - 1] != "Empty": 
+                    print("Seat is not available")
+                else:
+                    bus['seat'][seat_no - 1] = passenger
+            else:
+                print("Bus is not available right now")
+
+        print(self.bus_list)
+
 # b = Bus(3, "Abdullah", "23pm", "24pm", "ctg", "dhaka")
 # print(vars(b))
 phibus = Phibus()
 phibus.add_bus()
+counter = Counter()
+counter.reserve_seat()
 
