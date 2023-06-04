@@ -47,6 +47,7 @@ class Phibus:
 # counter class
 class Counter(Phibus):
     user_list = []
+
     def reserve_seat(self):
         bus_no = int(input("Enter bus no: "))
 
@@ -88,6 +89,9 @@ class Counter(Phibus):
                     print()
                 print("*" * 50)
 
+    def get_user(self):
+        return self.user_list
+
     def create_passenger(self):
         name = input("Enter you username: ")
         password = input("Enter your password: ")
@@ -102,10 +106,66 @@ class Counter(Phibus):
             for bus in self.bus_list:
                 print()
                 print(f"{' ' * 10}{'#' * 10} BUS {bus['coach']} INFO {'#' * 10}")
-                print(f"Bus Number: {bus_no}\t\t\tDriver: {bus['driver']}")
+                print(f"Bus Number: {bus['coach']}\t\t\tDriver: {bus['driver']}")
                 print(f"Arrival: {bus['arrival']}\t\t\tDeparture time: {bus['departure']}")
                 print(f"From: {bus['from_destination']}\t\t\tTo: {bus['to_destination']}")
+            print("*" * 50)
 
+
+while True:
+    company = Phibus()
+    b = Counter()
+    print("1. Create an account\n2. Login to your account\n3. Exit")
+
+    user_input = int(input("Enter your choice: "))
+
+    if user_input == 3:
+        break
+    elif user_input == 1:
+        b.create_passenger()
+    elif user_input == 2:
+        name = input("Enter your username: ")
+        password = input("Enter your password: ")
+
+        flag = 0
+        is_admin = False
+
+        if name == "admin" and password == "123":
+            is_admin = True
+        if is_admin == False:
+            for user in b.get_user():
+                if user['username'] == name and user['password'] == password:
+                    flag = 1
+                    break
+            if flag:
+                while True:
+                    print(f"\n{' ' * 10} Welcome to the BUS BOOKING SYSTEM")
+                    print("1. Available Buses\n2. Show bus info\n3. Reservation\n4. Exit")
+                    a = int(input("Enter your choice: "))
+                    if a == 4:
+                        break
+                    elif a == 1:
+                        b.available_buses()
+                    elif a == 2:
+                        b.display_seat_plan()
+                    elif a == 3:
+                        b.reserve_seat()
+            else:
+                print("No username found\n")
+        else:
+            while True:
+                print(f"\n{' ' * 10} Hello Admin Welcome to the BUS BOOKING SYSTEM")
+                print("1. Add Bus\n2. Available Buses \n3. Show Bus Info \n4. EXIT")
+                a=int(input("Enter Your Choice : "))
+
+                if a==4:
+                    break
+                elif a==1:
+                    b.add_bus()
+                elif a==2:
+                    b.available_buses()
+                elif a==3:
+                    b.display_seat_plan()
 
 # b = Bus(3, "Abdullah", "23pm", "24pm", "ctg", "dhaka")
 # print(vars(b))
