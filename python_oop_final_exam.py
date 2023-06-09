@@ -1,88 +1,114 @@
 class Bank:
-    total_balance = 0
-    total_loan_amount = 0
-    __loan_allowed = True
+    # protected bank data
+    _total_balance = 0
+    _total_loan_amount = 0
+    _loan_allowed = True
 
     def __init__(self, name, address):
         self.name = name
         self.address = address
-   
-    @classmethod
-    def stop_loan_permission(self):
-        self.__loan_allowed = False
-
-    @classmethod
-    def loan_allowed_status(self):
-        return self.__loan_allowed
 
 class Person:    
     def __init__(self, name, email):
         self.name = name
         self.email = email
 
-class Admin(Person):
+class Admin(Person, Bank):
     def __init__(self, name, email):
         super().__init__(name, email)
 
-    def total_available_balance(self):
-        return Bank.total_balance
+    def create_an_account(self):
+        pass
     
-    def total_loan_amount(self):
-        return Bank.total_loan_amount
-    
+    # stop loan feature
     def stop_loan(self):
-        Bank.stop_loan_permission()
+        Bank._loan_allowed = False
 
-class User(Person):
+    # display total balance of whole Bank
+    def total_balance(self):
+        print("Total Bank Balance is", Bank._total_balance)
+    
+    # display total provided loan amount
+    def total_loan_amount(self):
+        print("Total Provided Loan is", Bank._total_loan_amount)
+
+class User(Person, Bank):
     def __init__(self, name, email):
+        super().__init__(name, email)
+
+    def create_an_account(self):
         self.__balance = 0
         self.history = []
-        super().__init__(name, email)
 
+    # deposit balance
     def deposit_balance(self, amount):
         if amount > 0:
             self.__balance += amount
-            Bank.total_balance += amount
+            Bank._total_balance += amount
             self.history.append(f"deposit {amount} taka in his account")
-        
+
+    # withdraw balance  
     def withdraw_balance(self, amount):
-        if amount > Bank.total_balance:
+        if amount > Bank._total_balance:
             print("The bank is under Bankrupt.")
         else:
             if amount <= self.__balance:
                 self.__balance -= amount
-                Bank.total_balance -= amount
+                Bank._total_balance -= amount
                 self.history.append(f"withdraw {amount} taka from his account")
 
+    # transfer amount
+    def transfer_amount(self, amount, receiver):
+        if amount <= self.__balance:
+            self.__balance -= amount
+            receiver.deposit_balance(amount)
+            self.history.append(f"Transfer {amount} taka")
+
+    # take a loan
     def take_loan(self, amount):
-        if Bank.loan_allowed_status() == False:
+        if Bank._loan_allowed == False:
             print("You can't take loan from this bank.")
             return
         
-        if amount <= self.__balance * 2 and amount <= Bank.total_balance:
-            Bank.total_balance -= amount
+        if amount <= self.__balance * 2 and amount <= Bank._total_balance:
+            Bank._total_balance -= amount
+            Bank._total_loan_amount += amount
             print("Here is your loan", amount)
         else:
             print("Bank does't have sufficient amount of money. Try again later. Thanks to banking with us.")
 
-    def __repr__(self):
-        return f"Name: {self.name} and Balance: {self.__balance}"
-    
-    @property
-    def get_balance(self):
-        return self.__balance
-    
-user = User("tapas", "tapas@gmail.com")
-admin = Admin("morshed", "morshed@manjur.com")
-print(user)
-user.deposit_balance(20000)
-user.withdraw_balance(1500)
-print(user.get_balance)
-for history in user.history:
-    print(history)
-print("Total Balance", Bank.total_balance)
-user.take_loan(12000)
-user.withdraw_balance(2000)
-print("Total Balance", Bank.total_balance)
-admin.stop_loan()
-user.take_loan(1000)
+    # display transaction history of a client
+    def transaction_history(self):
+        print(f"############ Transaction History of {self.name} ############")
+        for history in self.history:
+            print(history)
+        print("############ Transaction History End ############")
+
+    # display balace of a client
+    def available_balance(self):
+        print(self.__balance)
+
+
+
+user1 = User("mohim", "m@g.com")
+user2 = User("harun", "h@g.com")
+user3 = User("safi", "sa@g.com")
+admin = Admin("morshed", "m@g.com")
+admin.create_an_account()
+user1.create_an_account()
+user2.create_an_account()
+user3.create_an_account()
+user1.deposit_balance(20000)
+user2.deposit_balance(20000)
+user3.deposit_balance(20000)
+user1.take_loan(40000)
+user3.take_loan(20000)
+user1.take_loan(10000)
+admin.total_balance()
+admin.total_loan_amount()
+user2.withdraw_balance(10000)
+user2.available_balance()
+user2.transfer_amount(10000, user3)
+user2.available_balance()
+user2.transaction_history()
+user1.transaction_history()
